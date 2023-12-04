@@ -1,0 +1,1 @@
+{'watch_state': 'Plan to Watch', 'name': 'Persona 4 The Animation', 'type': 'Animeserie', 'ep_watched': '0', 'ep_total': '25', 'error_message': 'needs to be checked', 'id': 10588}

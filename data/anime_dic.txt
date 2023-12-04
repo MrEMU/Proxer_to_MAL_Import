@@ -1,0 +1,2 @@
+{'watch_state': 'Finished', 'name': '"Oshi no Ko"', 'type': 'Animeserie', 'ep_watched': '11', 'ep_total': '11', 'rating': '6'}
+{'watch_state': 'Plan to Watch', 'name': 'Persona 4 The Animation', 'type': 'Animeserie', 'ep_watched': '0', 'ep_total': '25'}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Created by XML Export feature at MyAnimeList.net
+ Version 1.1.0
+-->
+
+<myanimelist>
+
+    <myinfo>
+        <user_id>{Your User ID}</user_id>
+        <user_name>{Your User Name}</user_name>
+        <user_export_type>1</user_export_type>
+        <user_total_anime>1</user_total_anime>
+        <user_total_watching>1</user_total_watching>
+        <user_total_completed>1</user_total_completed>
+        <user_total_onhold>0</user_total_onhold>
+        <user_total_dropped>0</user_total_dropped>
+        <user_total_plantowatch>0</user_total_plantowatch>
+    </myinfo>
+
+</myanimelist>
