@@ -4,83 +4,32 @@ import time
 
 import requests
 import pickle
+from bs4 import BeautifulSoup
 
-input_file_name = "../data/anime_list.txt"
+input_file_html_name = "../data/anime_list_html.txt"
 output_file_name = "../data/anime_dic.txt"
 alt_output_file_name = "../data/anime_dic_with_id.txt"
-rating_file_name = "../data/ratings.txt"
 not_found_file_name = "../data/anime_not_found.txt"
 pickle_file_name = "../data/pickle_file.txt"
-unrated_title = ["Dragon Ball", "Another"]
 curr_file = os.path.abspath(__file__)
 curr_dir = os.path.dirname(curr_file)
-input_path = os.path.join(curr_dir, input_file_name)
+input_html_path = os.path.join(curr_dir, input_file_html_name)
 output_path = os.path.join(curr_dir, output_file_name)
 alt_output_path = os.path.join(curr_dir, alt_output_file_name)
-ratings_path = os.path.join(curr_dir, rating_file_name)
 not_found_path = os.path.join(curr_dir, not_found_file_name)
 pickle_file_path = os.path.join(curr_dir, pickle_file_name)
 
 client_id = os.environ.get("CLIENT_ID")
 assert client_id is not None
-Header = {"X-MAL-CLIENT-ID": client_id}
 
 
-def parse_anime_list():
-    """Parses anime list from anime_list.txt into an array of anime dictionaries. For the raw code the Proxer.me UCP's
-    anime list was copied from the site and reformatted by removing empty lines, option lines and ensuring the following
-    format:
-    [Abgeschlossen] 	Dragon Ball Z 	Animeserie
-    TV		291 /
-    The lines for Watching, Plan to watch and Dropped were kept in to determine the watch status."""
-    try:
-        with open(output_path, 'w') as file:
-            # Secure that output is empty
-            pass
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(f'An error occured: {e}')
-    anime_dic_array = []
-    with open(input_path, "r") as input_file:
-        with open(ratings_path, "r") as rating_file:
-            line = input_file.readline()
-            rating = rating_file.readline()
-            watch_state = "Completed"
-            while len(line) > 0:
-                if line == "Wird noch geschaut\n":
-                    watch_state = "Plan to Watch"
-                    line = input_file.readline()
-                elif line == "Am Schauen\n":
-                    watch_state = "Watching"
-                    line = input_file.readline()
-                elif line == "Abgebrochen\n":
-                    watch_state = "Dropped"
-                    line = input_file.readline()
-                anime_dic = {}
-                line_array = line.split("\t")
-                anime_dic.update({"watch_state": watch_state})
-                anime_dic.update({"name": line_array[1].rstrip()})
-                anime_dic.update({"type": line_array[2].replace("\n", "")})
-                line = input_file.readline()
-                line_array = line.split("\t")
-                episodes = line_array[2].split(" ")
-                anime_dic.update({"ep_watched": episodes[0], "ep_total": episodes[2].replace("\n", "")})
-                if anime_dic["watch_state"] != "Plan to Watch" and anime_dic["watch_state"] != "Watching" and not anime_dic["name"] in unrated_title:
-                    anime_dic.update({"rating": rating.replace("\n", "")})
-                    rating = rating_file.readline()
-                with open(output_path, 'a') as output_file:
-                    output_file.write(str(anime_dic) + "\n")
-                line = input_file.readline()
-                anime_dic_array.append(anime_dic)
-    with open(pickle_file_path, "wb") as pickle_file:
-        pickle.dump(anime_dic_array, pickle_file)
-
-
-def add_anime_ids():
+def add_anime_ids(clientid: str = client_id):
     """This function makes request to the MAL API to get the related id's for the animes. The requests are artificially
     slowed, because otherwise the MAL API will block them because of TooManyRequests. This needs an environment
-    variable named CLIENT_ID that holds your X-MAL-CLIENT-ID. Look into the Readme.md for more information."""
+    variable named CLIENT_ID that holds your X-MAL-CLIENT-ID or you can give it your Client_ID as a parametere on call.
+    Look into the Readme.md for more information."""
+    # define the header for the API calls
+    header = {"X-MAL-CLIENT-ID": clientid}
     with open(pickle_file_path, 'rb') as pickle_file:
         anime_dic_array = pickle.load(pickle_file)
     try:
@@ -101,7 +50,7 @@ def add_anime_ids():
     with open(alt_output_path, 'a') as output_file:
         with open(not_found_path, "a") as not_found:
             for anime_dic in anime_dic_array:
-                rs = requests.get("https://api.myanimelist.net/v2/anime", params={"q": anime_dic["name"], "fields": "id"}, headers=Header)
+                rs = requests.get("https://api.myanimelist.net/v2/anime", params={"q": anime_dic["name"], "fields": "id"}, headers=header)
                 print(anime_dic["name"])
                 print("Status Code: " + str(rs.status_code))
                 print("Response: " + rs.text)
@@ -130,9 +79,120 @@ def add_anime_ids():
         pickle.dump(result_array, pickle_file)
 
 
+def find_watch_state(line: str) -> str:
+    """This function tries to find the watch state in a html line. If it does not find any watch_state it returns None"""
+    # Parse the HTML content
+    soup = BeautifulSoup(line, 'lxml')
+
+    # Check if the table with id "box-table-a" exists
+    watch_state_table = soup.find('table', {'id': 'box-table-a'})
+
+    if watch_state_table:
+        # Find the first row in the table
+        first_row = watch_state_table.find('tr')
+
+        if first_row:
+            # Extract the content of the first header cell dynamically
+            header_content = first_row.find('th').get_text(strip=True)
+            return header_content
+        else:
+            return None
+    else:
+        return None
+
+
+def find_name(line: str) -> str:
+    """This function tries to find the name in a html line. If it does not find any watch_state it returns None"""
+    # Parse the HTML content
+    soup = BeautifulSoup(line, 'lxml')
+
+    # Extract the name using BeautifulSoup
+    name_element = soup.find('a', {'class': 'tip'})
+    if name_element:
+        name = name_element.get_text(strip=True)
+        return name
+    else:
+        return None
+
+
+def find_statistics(line: str) -> tuple[str, str, str, str]:
+    """This function tries to find various statistics (rating, medium, watched and total episodes) in a html line.
+    If it does not find any watch_state it returns None"""
+    # Parse the HTML content
+    soup = BeautifulSoup(line, 'html.parser')
+
+    # Extract information using BeautifulSoup
+    medium_full = soup.find('td', {'valign': 'top'})
+    medium = medium_full.contents[-1].strip() if medium_full else ""
+    rating_stars = len(soup.find_all('img', {'src': '/images/misc/stern.png'}))
+    rating = str(rating_stars) if  rating_stars > 0 else None
+    episodes = soup.find('span', {'class': 'state'}).get_text(strip=True)
+    episodes_watched, episodes_total = episodes.split("/")
+
+    return medium, rating, episodes_watched.replace(" ", ""), episodes_total.replace(" ", "")
+
+
+def parse_anime_list_from_html():
+    """This function parses an array of anime dictionaries out of the html source code of your Proxer.me watchlist.
+    You have to delete some of the top lines of this html code to get the parser to work. Look into the Readme.md for
+    more information."""
+    try:
+        with open(output_path, 'w') as file:
+            # Secure that output is empty
+            pass
+        with open(pickle_file_path, 'w') as file:
+            # Secure that output is empty
+            pass
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f'An error occured: {e}')
+    anime_dic_array = []
+    with open(output_path, "w") as output:
+        with open(input_html_path, "r") as input_file:
+            line = input_file.readline()
+            current_watch_state = None
+            for i in range(4):
+                while line:
+                    anime_dic = {}
+                    name = None
+                    watch_state = find_watch_state(line)
+                    if watch_state:
+                        current_watch_state = watch_state
+                        line = input_file.readline()
+                    name = find_name(line)
+                    while not name:
+                        line = input_file.readline()
+                        name = find_name(line)
+                        watch_state = find_watch_state(line)
+                        if watch_state:
+                            current_watch_state = watch_state
+                        if not line:
+                            break
+                    if not line:
+                        break
+                    anime_dic.update({"watch_state": current_watch_state, "name": name})
+                    line = input_file.readline()
+                    stats = find_statistics(line)
+                    while not line[0]:
+                        line = input_file.readline()
+                        stats = find_statistics(line)
+                        if not line:
+                            break
+                    if not line:
+                        break
+                    anime_dic.update({"type": stats[0], "rating": stats[1], "ep_watched": stats[2], "ep_total": stats[3]})
+                    print(anime_dic)
+                    output.write(str(anime_dic) + "\n")
+                    anime_dic_array.append(anime_dic)
+                    line = input_file.readline()
+            with open(pickle_file_path, "wb") as pickle_file:
+                pickle.dump(anime_dic_array, pickle_file)
+
+
 if __name__ == "__main__":
-    #anime_dic_array = parse_anime_list()
-    #add_anime_ids(anime_dic_array)
-    rs = requests.get("https://api.myanimelist.net/v2/anime", params={"q": "Komi-san wa, Comyushou desu.", "fields": "id"}, headers=Header)
-    print(rs.status_code)
-    print(rs.text)
+    parse_anime_list_from_html()
+    add_anime_ids()
+    #rs = requests.get("https://api.myanimelist.net/v2/anime", params={"q": "Komi-san wa, Comyushou desu.", "fields": "id"}, headers=Header)
+    #print(rs.status_code)
+    #print(rs.text)

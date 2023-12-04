@@ -1,13 +1,15 @@
 [tool.poetry]
 name = "proxertomalimport"
-version = "0.1.0"
-description = ""
+version = "0.2.0"
+description = "Parses the html code of a Proxer.me anime watchlist to a MyAnimeList import xml file."
 authors = ["MrEMU <fabian.endter@googlemail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
 requests = "^2.31.0"
+beautifulsoup4 = "^4.12.2"
+lxml = "^4.9.3"
 
 
 [build-system]

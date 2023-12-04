@@ -1,7 +1,5 @@
-import json
 import os
 import pickle
-import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from xml.dom import minidom
@@ -40,7 +38,7 @@ def parse_anime_to_xml(anime):
     my_finish_date.text = datetime.now().strftime("%Y-%m-%d")
     my_rated = ET.Element("my_rated")
     my_score = ET.Element("my_score")
-    if "rating" in anime.keys():
+    if anime["rating"]:
         my_score.text = anime["rating"]
     my_dvd = ET.Element("my_dvd")
     my_storage = ET.Element("my_storage")
@@ -79,7 +77,9 @@ def parse_anime_to_xml(anime):
 
 
 def parse_mal_xml():
-    """Parse anime dictionary to XML elements and write it together with the template into mal_import.xml"""
+    """Parse anime dictionary to XML elements and write it together with the template into mal_import.xml. There will
+    be some errors in the xml output file afterward that need manual addressing. Look into the Readme.md for more
+    information."""
     with open(pickle_file_path, 'rb') as pickle_file:
         anime_dic_array = pickle.load(pickle_file)
     try:

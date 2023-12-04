@@ -4,9 +4,20 @@
 <a class="tip" title="Cover:56409" href="/info/56409#top" data-ajax="true">"Oshi no Ko"</a>
 </td><td valign="top">Animeserie<br/>TV</td><td valign="top"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern.png"><img width="15" src="/images/misc/stern_grau.png"><img width="15" src="/images/misc/stern_grau.png"><img width="15" src="/images/misc/stern_grau.png"><img width="15" src="/images/misc/stern_grau.png"></td><td valign="top"><span class="state">11 / 11</span></td><td valign="top" class="ucp_options"><a class="menu" target="_blank" href="/comment?id=50011075#top" title="Details" data-ajax="true"><i class="fa fa-info" aria-hidden="true"></i></a> <a class="menu" target="_blank" href="/comment?id=50011075&s=edit#top" title="Bearbeiten" data-ajax="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> <a class="menu ucp_list_delete" href="javascript:;" title="Löschen"><i class="fa fa-times" aria-hidden="true"></i></a></td>
 </tr><tr id="entry40783388">
+<a id="state2" name="state2"></a><br/><br/>
 <table id="box-table-a" align="center" width="100%"><tr><th colspan="6">Wird noch geschaut</th></tr><tr align="left"><th width="15"></th><th width="40%">Name</th><th width="10%">Medium</th><th width="18%">Bew.</th><th width="10%">Stand</th><th>Optionen</th></tr><tr id="entry48719965">
 <td><img class="tip" src="/images/status/abgeschlossen.png" height="20" title="Abgeschlossen"></td>
 <td valign="top">
 <a class="tip" title="Cover:2102" href="/info/2102#top" data-ajax="true">Persona 4 The Animation</a>
 </td><td valign="top">Animeserie<br/>TV</td><td valign="top">-</td><td valign="top"><span class="state">0 / 25</span></td><td valign="top" class="ucp_options"><a href="javascript:void(0);" class="menu ajaxIncState" title="Episode erhöhen"><i class="fa fa-plus" aria-hidden="true"></i></a> <a class="menu" target="_blank" href="/comment?id=8568722#top" title="Details" data-ajax="true"><i class="fa fa-info" aria-hidden="true"></i></a> <a class="menu" target="_blank" href="/comment?id=8568722&s=edit#top" title="Bearbeiten" data-ajax="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> <a class="menu ucp_list_delete" href="javascript:;" title="Löschen"><i class="fa fa-times" aria-hidden="true"></i></a></td>
 </tr><tr id="entry20881956">
+var ucp_list_states = ["Geschaut","Am Schauen","Wird noch geschaut","Abgebrochen"];
+</script>
+<script type="text/javascript" src="/components/com_proxer/js/ucp/list.js?9"></script>
+</div>
+</div>
+<div id="misc" class="sprechblase" style="display:none;"></div>
+<div id="messages"></div>
+<input type="hidden" value="71945dea585a82dbff7b008e611892bb" id="proxerToken">
+</body>
+</html>

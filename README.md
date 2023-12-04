@@ -8,7 +8,42 @@ This repositrory holds scripts, that will convert a manually exportet Proxer.me 
 - installation of dependencies (`poetry install`)
 - a MAL Client ID
 
-## Installation Guide
+## Installation Guide for Users
+
+### Step 1
+
+Install the newest version of Python on your system.
+
+### Step 2
+
+Install the newest version [poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer) on your system.
+
+### Step 3
+
+Clone this repository on your system using `git clone https://github.com/MrEMU/Proxer_to_MAL_Import.git`.
+
+### Step 4
+
+Open a command line and navigate into the repository folder on your system.
+
+### Step 5
+
+Install the dependencies using `poetry install`.
+
+### Step 6
+
+Aquire a MAL Client ID.
+
+To acquire a MAL Client ID you have to create it inside your MAL Account. In the Account settings under API you can find
+the button ``Client ID``. You will have to fill out the form as described in step 0 of
+[ZeroCrystal's Blogpost](https://myanimelist.net/blog.php?eid=835707).
+
+![img.png](img.png)
+(This picture is inspired by [ZeroCrystal's Blogpost](https://myanimelist.net/blog.php?eid=835707) on MyAnimeList regarding the Authorisation Flow for the MAL API)
+
+After successfully creating an ID, you can find it by clicking on the ``Edit`` button next to the created Client ID.
+
+## Installation Guide for Devs
 
 ### Step 1
 
@@ -29,6 +64,9 @@ Either let your IDE install the dependencies or install them manually with `poet
 
 ### Step 5
 
+Acquire a MAL Client ID.
+
+
 To acquire a MAL Client ID you have to create it inside your MAL Account. In the Account settings under API you can find
 the button ``Client ID``. You will have to fill out the form as described in step 0 of 
 [ZeroCrystal's Blogpost](https://myanimelist.net/blog.php?eid=835707).
@@ -43,7 +81,7 @@ After successfully creating an ID, you can find it by clicking on the ``Edit`` b
 Set the environment variable `CLIENT_ID={ClientID}` in the templates of your IDEs run configuration for `Python`, where 
 ``{ClientID}`` is the ClientID you retrieved during Step 5.
 
-## Installation Advices
+## Installation Advices for Devs
 
 When you are in the setup of your IDE's interpreter, you may choose the poetry environment. For this you may need to
 change the poetry executable path to the path your system installed it to.
@@ -60,34 +98,20 @@ a template for the XML output file. There are three major
 data files to prepare:
 
 1. ``anime_list.txt``: holding most of the information of your watch list
-2. ``ratings_raw.txt``: only used to parse the rating for every anime, since it is displayed in stars by Proxer.me
-3. ``template.xml``: for the base of the xml we need a template consisting of an empty export of your MAL Anime Watchlist
+2. ``template.xml``: for the base of the xml we need a template consisting of an empty export of your MAL Anime Watchlist
 
-### Prepare ``anime_list.txt``
+### Prepare ``anime_list_html.txt``
 
-To prepare the ``\data\anime_list.txt`` you will first need to gather the raw data. For this you need to log in to your
-Proxer.me account and navigate to the Anime list in your User-Control-Panel (UCP). There you need to select the content
-of all the tables and copy it into the ``\data\anime_list.txt`` file.
-
-Then you will need to do some formatting:
-
-1. Remove the leading ```Geschaut``` line. The lines indicating the next tables should stay (``Am Schauen``, ``Wird noch geschaut``, ``Abgebrochen``)
-2. Remove every empty line.
-3. Remove every line containing the table descriptors (``Name``, ``Medium``, ``Bew.``, ``Stand``, ``Optionen``).
-4. Ensure that every anime is in the following format:
-
-```
-[Abgeschlossen] 	"Oshi no Ko" 	Animeserie
-TV		11 / 11
-```
-
-### Prepare ``ratings_raw.txt``
-
-To prepare the ``\data\ratings_raw.txt`` you will first need to gather the raw data. For this you need to log in to your
+To prepare the ``\data\anime_list_html.txt`` you will first need to gather the raw data. For this you need to log in to your
 Proxer.me account and navigate to the Anime list in your User-Control-Panel (UCP). There you need to open the html source
-code (Ctr + U in Windows) and copy it into the ``\data\ratings_raw.txt`` file.
+code (Ctr + U in Windows) and copy it into the ``\data\anime_list_html.txt`` file.
 
-Next you only need to remove every empty line in the file, and it is ready.
+Then you will need to remove every line until the leading line is the html table definition for the ```Geschaut``` line.
+The top line of your file should look like the following:
+
+```
+<table id="box-table-a" align="center" width="100%"><tr><th colspan="6">Geschaut</th></tr><tr align="left"><th width="15"></th><th width="40%">Name</th><th width="10%">Medium</th><th width="18%">Bew.</th><th width="10%">Stand</th><th>Optionen</th></tr><tr id="entry50011075">
+```
 
 ### Prepare ``template.xml``
 
@@ -134,6 +158,9 @@ Run with poetry:
 $ poetry run python main.py
 ```
 
+After starting the script it will ask for your MAL Client ID. Either copy and paste it from you MAL Account settings if
+you are a normal user or skip this step, if you are a dev and have set up the environment variable in your IDE.
+
 ### Finish
 
 After the Script has successfully finished, there will be a generated ``\data\mal_import.xml``. Because of differences in
@@ -154,9 +181,8 @@ You can find ``Oshi no Ko``'s ID between ``anime`` and ``Oshi_no_Ko``. Thereby, 
 
 There are still some issues with this project:
 
-1. Since Proxer.me does not provide a native solution to export the watchlist, the procedure to get the source files ``anime_list.txt`` and ``ratings_raw.txt`` is rather complicated.
-2. As the MAL API is still in beta, the number of requests is artificially limited to 12 per minute (or one every 5 seconds). Otherwise, the API will block the requests because of TooManyRequests.
-3. As there are some differences in names, one has to look through the ``maml_import.xml`` file for errors and fix them manually.
+1. As the MAL API is still in beta, the number of requests is artificially limited to 12 per minute (or one every 5 seconds). Otherwise, the API will block the requests because of TooManyRequests.
+2. As there are some differences in names, one has to look through the ``maml_import.xml`` file for errors and fix them manually.
 
 ## License
 
