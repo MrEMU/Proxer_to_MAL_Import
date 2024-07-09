@@ -19,11 +19,8 @@ alt_output_path = os.path.join(curr_dir, alt_output_file_name)
 not_found_path = os.path.join(curr_dir, not_found_file_name)
 pickle_file_path = os.path.join(curr_dir, pickle_file_name)
 
-client_id = os.environ.get("CLIENT_ID")
-assert client_id is not None
 
-
-def add_anime_ids(clientid: str = client_id):
+def add_anime_ids(clientid: str):
     """This function makes request to the MAL API to get the related id's for the animes. The requests are artificially
     slowed, because otherwise the MAL API will block them because of TooManyRequests. This needs an environment
     variable named CLIENT_ID that holds your X-MAL-CLIENT-ID or you can give it your Client_ID as a parametere on call.
@@ -191,8 +188,9 @@ def parse_anime_list_from_html():
 
 
 if __name__ == "__main__":
+    clientID = input("Input your MAL ClientID: ")
     parse_anime_list_from_html()
-    add_anime_ids()
+    add_anime_ids(clientID)
     #rs = requests.get("https://api.myanimelist.net/v2/anime", params={"q": "Komi-san wa, Comyushou desu.", "fields": "id"}, headers=Header)
     #print(rs.status_code)
     #print(rs.text)
