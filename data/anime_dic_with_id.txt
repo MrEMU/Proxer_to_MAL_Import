@@ -1,2 +1,2 @@
-{'watch_state': 'Finished', 'name': '"Oshi no Ko"', 'type': 'Animeserie', 'ep_watched': '11', 'ep_total': '11', 'rating': '6', 'id': 52034}
-{'watch_state': 'Plan to Watch', 'name': 'Persona 4 The Animation', 'type': 'Animeserie', 'ep_watched': '0', 'ep_total': '25', 'error_message': 'needs to be checked', 'id': 10588}
+{'watch_state': 'Geschaut', 'name': '"Oshi no Ko"', 'type': 'TV', 'rating': '6', 'ep_watched': '11', 'ep_total': '11', 'id': 52034}
+{'watch_state': 'Wird noch geschaut', 'name': 'Persona 4 The Animation', 'type': 'TV', 'rating': None, 'ep_watched': '0', 'ep_total': '25', 'error_message': 'needs to be checked', 'id': 10588}

@@ -9,7 +9,8 @@ if __name__ == "__main__":
     if clientID:
         add_anime_ids(clientID)
     else:
-        add_anime_ids()
+        while not clientID:
+            clientID = input("Input your MAL ClientID: ")
     parse_mal_xml()
     print("You should check all animes mentioned in /data/anime_not_found.txt. They are also tagged with an error element in the mal_import.xml.")
 
